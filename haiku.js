@@ -5,17 +5,15 @@ var fs = require("fs");
 var dictionary = {};
 // dictionary is an object that pairs # of syllables to an array of words
 
+// populate dictionary with cmudict
 fs.readFile('cmudict.txt', function(err, data) {
 	if(err) {
 		return console.log(err);
 	}
 
-	console.log("start");
 	var lines = data.toString().split("\n")
 	lines.forEach(function(line) {
 	  	line_split = line.split("  ");
-
-	  	console.log(line_split[0]);
 		var syllables = countSyllables(line_split[1]);
 
 		if (dictionary[syllables]) {
@@ -23,16 +21,23 @@ fs.readFile('cmudict.txt', function(err, data) {
 		} else {
 			dictionary[syllables] = [line_split[0]];
 		}
-
-
-		//console.log("The word " + line_split[0] + " has this phoneme layout: " + line_split[1]); 
 	});
-	console.log("done");
+
+	console.log(selectRandomWord("5", dictionary));
+	console.log(selectRandomWord("7", dictionary));
+	console.log(selectRandomWord("5", dictionary));
 });
+
+
 
 function countSyllables(phoneme) {
 	var syls = phoneme.match(/\d/g);
 	
 	if (syls) return syls.length;
 	else return 0;
+}
+
+function selectRandomWord(syllables, dictionary) {
+	var len = dictionary[syllables].length;
+	return dictionary[syllables][Math.floor(Math.random() * len)];
 }
